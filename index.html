@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solo Leveling: System</title>
-    <!-- Подключаем скрипт Telegram, чтобы окно работало правильно -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -34,6 +33,41 @@
             font-weight: bold;
             margin-bottom: 20px;
         }
+        
+        /* Стили для статус-баров HP и MP */
+        .bar-container {
+            margin: 15px 0;
+            text-align: left;
+        }
+        .bar-label {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .bar-bg {
+            background-color: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 14px;
+            border: 1px solid #444;
+        }
+        .hp-fill {
+            background: linear-gradient(90deg, #ff0044, #ff5577);
+            height: 100%;
+            width: 100%;
+            box-shadow: 0 0 8px #ff0044;
+            transition: width 0.3s;
+        }
+        .mp-fill {
+            background: linear-gradient(90deg, #0099ff, #00d2ff);
+            height: 100%;
+            width: 100%;
+            box-shadow: 0 0 8px #0099ff;
+            transition: width 0.3s;
+        }
+
         .stat-row {
             display: flex;
             justify-content: space-between;
@@ -67,6 +101,18 @@
         <h1>Sung Jinwoo</h1>
         <div class="title">The Monarch of Shadows</div>
         
+        <!-- Полоска HP -->
+        <div class="bar-container">
+            <div class="bar-label"><span>HP</span><span id="hp-text">100 / 100</span></div>
+            <div class="bar-bg"><div class="hp-fill" id="hp-bar"></div></div>
+        </div>
+
+        <!-- Полоска MP -->
+        <div class="bar-container">
+            <div class="bar-label"><span>MP</span><span id="mp-text">100 / 100</span></div>
+            <div class="bar-bg"><div class="mp-fill" id="mp-bar"></div></div>
+        </div>
+        
         <div class="stat-row">
             <span>Уровень (Lv.)</span>
             <span class="stat-val" id="lvl">75</span>
@@ -88,21 +134,43 @@
     </div>
 
     <script>
-        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Развернуть окно на весь экран
+        tg.expand();
 
-        // Простая функция для кнопки
+        // Загрузка сохраненных данных
+        window.onload = function() {
+            if (localStorage.getItem('lvl')) {
+                document.getElementById('lvl').innerText = localStorage.getItem('lvl');
+                document.getElementById('str').innerText = localStorage.getItem('str');
+                updateBars(parseInt(localStorage.getItem('lvl')));
+            }
+        }
+
+        function updateBars(lvl) {
+            let maxHp = 100 + (lvl - 75) * 15;
+            let maxMp = 100 + (lvl - 75) * 10;
+            document.getElementById('hp-text').innerText = maxHp + " / " + maxHp;
+            document.getElementById('mp-text').innerText = maxMp + " / " + maxMp;
+        }
+
         function levelUp() {
             let lvlElement = document.getElementById('lvl');
-            let currentLvl = parseInt(lvlElement.innerText);
-            lvlElement.innerText = currentLvl + 1;
-            
             let strElement = document.getElementById('str');
-            strElement.innerText = parseInt(strElement.innerText) + 2;
             
-            // Всплывающее уведомление внутри Telegram
-            tg.showAlert("⚡ Уровень повышен! Сила выросла!");
+            let newLvl = parseInt(lvlElement.innerText) + 1;
+            let newStr = parseInt(strElement.innerText) + 2;
+            
+            lvlElement.innerText = newLvl;
+            strElement.innerText = newStr;
+            
+            // Сохраняем в память телефона
+            localStorage.setItem('lvl', newLvl);
+            localStorage.setItem('str', newStr);
+            
+            // Обновляем шкалы
+            updateBars(newLvl);
+            
+            tg.showAlert("⚡ Система зафиксировала поднятие уровня! Характеристики увеличены.");
         }
     </script>
 </body>
