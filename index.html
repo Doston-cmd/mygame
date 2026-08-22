@@ -7,88 +7,116 @@
     <script src="https://telegram.org"></script>
     <style>
         body {
-            background-color: #0d1117;
+            background-color: #0c0f14;
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             margin: 0;
         }
         .card {
-            border: 2px solid #8a2be2;
-            border-radius: 15px;
-            background: linear-gradient(145deg, #1f1a3a, #0d0b18);
+            border: 2px solid #00f0ff;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #0b1424, #050811);
             padding: 20px;
-            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
-            max-width: 350px;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            max-width: 360px;
             margin: 0 auto;
         }
         h1 {
             color: #00ffff;
-            text-shadow: 0 0 10px #00ffff;
-            margin-bottom: 5px;
+            text-shadow: 0 0 15px #00ffff;
+            margin: 0 0 5px 0;
+            font-size: 24px;
+            text-transform: uppercase;
         }
         .title {
-            color: #8a2be2;
+            color: #7b2cbf;
             font-weight: bold;
-            margin-bottom: 20px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 8px #7b2cbf;
         }
-        
-        /* Стили для статус-баров HP и MP */
         .bar-container {
-            margin: 15px 0;
+            margin: 10px 0;
             text-align: left;
         }
         .bar-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             display: flex;
             justify-content: space-between;
         }
         .bar-bg {
-            background-color: #222;
-            border-radius: 8px;
+            background-color: #111;
+            border-radius: 4px;
             overflow: hidden;
-            height: 14px;
-            border: 1px solid #444;
+            height: 10px;
+            border: 1px solid #222;
         }
         .hp-fill {
             background: linear-gradient(90deg, #ff0044, #ff5577);
             height: 100%;
             width: 100%;
             box-shadow: 0 0 8px #ff0044;
-            transition: width 0.3s;
         }
         .mp-fill {
             background: linear-gradient(90deg, #0099ff, #00d2ff);
             height: 100%;
             width: 100%;
             box-shadow: 0 0 8px #0099ff;
-            transition: width 0.3s;
         }
-
         .stat-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #332a56;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a2636;
+            font-size: 14px;
         }
         .stat-val {
-            color: #ff007f;
+            color: #00ffff;
             font-weight: bold;
         }
+        .quest-box {
+            border: 1px solid #ffaa00;
+            background: rgba(255, 170, 0, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            text-align: left;
+            box-shadow: 0 0 10px rgba(255, 170, 0, 0.1);
+        }
+        .quest-title {
+            color: #ffaa00;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px #ffaa00;
+        }
+        .quest-item {
+            font-size: 12px;
+            margin: 4px 0;
+            color: #ccc;
+        }
         .btn {
-            background-color: #00ffff;
+            background: linear-gradient(135deg, #00ffff, #0088cc);
             color: #000;
             border: none;
-            padding: 12px 25px;
+            padding: 10px;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 10px;
             width: 100%;
             box-shadow: 0 0 10px #00ffff;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .btn-quest {
+            background: linear-gradient(135deg, #ffaa00, #996600);
+            box-shadow: 0 0 10px #ffaa00;
         }
         .btn:active {
             transform: scale(0.98);
@@ -101,76 +129,84 @@
         <h1>Sung Jinwoo</h1>
         <div class="title">The Monarch of Shadows</div>
         
-        <!-- Полоска HP -->
+        <!-- ХП и МП -->
         <div class="bar-container">
             <div class="bar-label"><span>HP</span><span id="hp-text">100 / 100</span></div>
             <div class="bar-bg"><div class="hp-fill" id="hp-bar"></div></div>
         </div>
-
-        <!-- Полоска MP -->
         <div class="bar-container">
             <div class="bar-label"><span>MP</span><span id="mp-text">100 / 100</span></div>
             <div class="bar-bg"><div class="mp-fill" id="mp-bar"></div></div>
         </div>
         
-        <div class="stat-row">
-            <span>Уровень (Lv.)</span>
-            <span class="stat-val" id="lvl">75</span>
-        </div>
-        <div class="stat-row">
-            <span>Сила (Strength)</span>
-            <span class="stat-val" id="str">19</span>
-        </div>
-        <div class="stat-row">
-            <span>Ловкость (Agility)</span>
-            <span class="stat-val" id="agi">10</span>
-        </div>
-        <div class="stat-row">
-            <span>Живучесть (Vitality)</span>
-            <span class="stat-val" id="vit">10</span>
-        </div>
+        <!-- Статы -->
+        <div class="stat-row"><span>Уровень (Lv.)</span><span class="stat-val" id="lvl">1</span></div>
+        <div class="stat-row"><span>Золото (Gold)</span><span class="stat-val" style="color: #ffcc00;" id="gold">0 🪙</span></div>
+        <div class="stat-row"><span>Сила (Strength)</span><span class="stat-val" id="str">10</span></div>
+        <div class="stat-row"><span>Ловкость (Agility)</span><span class="stat-val" id="agi">10</span></div>
 
-        <button class="btn" onclick="levelUp()">ПОВЫСИТЬ УРОВЕНЬ</button>
+        <button class="btn" onclick="addStat('str')">+1 к Силе</button>
+        <button class="btn" onclick="addStat('agi')">+1 к Ловкости</button>
+
+        <!-- Ежедневный квест прямо из аниме -->
+        <div class="quest-box">
+            <div class="quest-title">📜 Ежедневный квест: Подготовка</div>
+            <div class="quest-item">✔ Отжимания: 100 раз</div>
+            <div class="quest-item">✔ Приседания: 100 раз</div>
+            <div class="quest-item">✔ Пресс: 100 раз</div>
+            <div class="quest-item">✔ Бег: 10 км</div>
+            <button class="btn btn-quest" onclick="completeQuest()">Сдать квест Системе</button>
+        </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Загрузка сохраненных данных
+        // Переменные игры
+        let lvl = parseInt(localStorage.getItem('sl_lvl')) || 1;
+        let gold = parseInt(localStorage.getItem('sl_gold')) || 0;
+        let strength = parseInt(localStorage.getItem('sl_str')) || 10;
+        let agility = parseInt(localStorage.getItem('sl_agi')) || 10;
+
         window.onload = function() {
-            if (localStorage.getItem('lvl')) {
-                document.getElementById('lvl').innerText = localStorage.getItem('lvl');
-                document.getElementById('str').innerText = localStorage.getItem('str');
-                updateBars(parseInt(localStorage.getItem('lvl')));
-            }
+            updateUI();
         }
 
-        function updateBars(lvl) {
-            let maxHp = 100 + (lvl - 75) * 15;
-            let maxMp = 100 + (lvl - 75) * 10;
+        function updateUI() {
+            document.getElementById('lvl').innerText = lvl;
+            document.getElementById('gold').innerText = gold + " 🪙";
+            document.getElementById('str').innerText = strength;
+            document.getElementById('agi').innerText = agility;
+
+            // Расчет ХП и МП на основе статов
+            let maxHp = 100 + (strength * 12);
+            let maxMp = 100 + (agility * 8);
             document.getElementById('hp-text').innerText = maxHp + " / " + maxHp;
             document.getElementById('mp-text').innerText = maxMp + " / " + maxMp;
         }
 
-        function levelUp() {
-            let lvlElement = document.getElementById('lvl');
-            let strElement = document.getElementById('str');
-            
-            let newLvl = parseInt(lvlElement.innerText) + 1;
-            let newStr = parseInt(strElement.innerText) + 2;
-            
-            lvlElement.innerText = newLvl;
-            strElement.innerText = newStr;
-            
-            // Сохраняем в память телефона
-            localStorage.setItem('lvl', newLvl);
-            localStorage.setItem('str', newStr);
-            
-            // Обновляем шкалы
-            updateBars(newLvl);
-            
-            tg.showAlert("⚡ Система зафиксировала поднятие уровня! Характеристики увеличены.");
+        function addStat(type) {
+            if (type === 'str') strength += 1;
+            if (type === 'agi') agility += 1;
+            saveData();
+            updateUI();
+        }
+
+        function completeQuest() {
+            // Награда как в аниме: золото и левелап
+            gold += 500;
+            lvl += 1;
+            saveData();
+            updateUI();
+            tg.showAlert("🎉 Квест выполнен! Тренировка завершена.\nНаграда: +1 Уровень, +500 Золота, Восстановление HP/MP!");
+        }
+
+        function saveData() {
+            localStorage.setItem('sl_lvl', lvl);
+            localStorage.setItem('sl_gold', gold);
+            localStorage.setItem('sl_str', strength);
+            localStorage.setItem('sl_agi', agility);
         }
     </script>
 </body>
