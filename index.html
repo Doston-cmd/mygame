@@ -77,11 +77,23 @@
             background-color: #111;
             border-radius: 4px;
             overflow: hidden;
-            height: 10px;
+            height: 14px;
             border: 1px solid #222;
         }
-        .hp-fill { background: linear-gradient(90deg, #ff0044, #ff5577); height: 100%; width: 100%; box-shadow: 0 0 8px #ff0044; }
-        .mp-fill { background: linear-gradient(90deg, #0099ff, #00d2ff); height: 100%; width: 100%; box-shadow: 0 0 8px #0099ff; }
+        .hp-fill { 
+            background: linear-gradient(90deg, #ff0044, #ff5577); 
+            height: 100%; 
+            width: 100%; 
+            box-shadow: 0 0 8px #ff0044; 
+            transition: width 0.3s ease;
+        }
+        .mp-fill { 
+            background: linear-gradient(90deg, #0099ff, #00d2ff); 
+            height: 100%; 
+            width: 100%; 
+            box-shadow: 0 0 8px #0099ff; 
+            transition: width 0.3s ease;
+        }
         .stat-row {
             display: flex;
             justify-content: space-between;
@@ -168,7 +180,7 @@
             <div class="shop-item">
                 <div class="item-info">
                     <h4>Кинжал Касаки</h4>
-                    <p>Эффект: Сила +15</p>
+                    <p>Эффект: Бонус к HP</p>
                     <p style="color: #ffcc00; font-weight: bold;">Цена: 1000 🪙</p>
                 </div>
                 <button class="btn btn-buy" id="btn-kasaki" onclick="buyItem('kasaki', 1000)">Купить</button>
@@ -177,7 +189,7 @@
             <div class="shop-item">
                 <div class="item-info">
                     <h4>Убийца Рыцарей</h4>
-                    <p>Эффект: Сила +40</p>
+                    <p>Эффект: Бонус к MP</p>
                     <p style="color: #ffcc00; font-weight: bold;">Цена: 3500 🪙</p>
                 </div>
                 <button class="btn btn-buy" id="btn-knight" onclick="buyItem('knight', 3500)">Купить</button>
@@ -212,14 +224,23 @@
             document.getElementById('lvl').innerText = lvl;
             document.getElementById('gold').innerText = gold + " 🪙";
             
-            let totalStr = strength + (hasKasaki ? 15 : 0) + (hasKnight ? 40 : 0);
-            document.getElementById('str').innerText = totalStr + (hasKasaki || hasKnight ? " (Экипировано)" : "");
-            document.getElementById('agi').innerText = agility;
+            // Расчет статов с оружием
+            let totalStr = strength + (hasKasaki ? 15 : 0);
+            let totalAgi = agility + (hasKnight ? 25 : 0);
+            
+            document.getElementById('str').innerText = totalStr + (hasKasaki ? " (Касаки)" : "");
+            document.getElementById('agi').innerText = totalAgi + (hasKnight ? " (Рыцарь)" : "");
 
-            let maxHp = 100 + (totalStr * 12);
-            let maxMp = 100 + (agility * 8);
+            // Живой расчет шкал: чем больше стат, тем длиннее визуальная полоска
+            let maxHp = 100 + (totalStr * 10);
+            let maxMp = 100 + (totalAgi * 10);
+            
             document.getElementById('hp-text').innerText = maxHp + " / " + maxHp;
             document.getElementById('mp-text').innerText = maxMp + " / " + maxMp;
+
+            // Длина шкал всегда 100%, так как мы полны сил при прокачке статов
+            document.getElementById('hp-bar').style.width = "100%";
+            document.getElementById('mp-bar').style.width = "100%";
 
             if (hasKasaki) { document.getElementById('btn-kasaki').innerText = "Куплено"; document.getElementById('btn-kasaki').disabled = true; }
             if (hasKnight) { document.getElementById('btn-knight').innerText = "Куплено"; document.getElementById('btn-knight').disabled = true; }
@@ -237,7 +258,7 @@
             lvl += 1;
             saveData();
             updateUI();
-            tg.showAlert("🎉 Квест сдан Системе!\nНаграда: +1 Уровень, +500 Золота!");
+            tg.showAlert("🎉 Квест зафиксирован Системой!\nНаграда: +1 Уровень, +500 Золота!");
         }
 
         function buyItem(item, price) {
@@ -247,9 +268,9 @@
                 if (item === 'knight') hasKnight = true;
                 saveData();
                 updateUI();
-                tg.showAlert("⚔️ Оружие куплено и экипировано! Характеристики взлетели!");
+                tg.showAlert("⚔️ Оружие экипировано! Ваши максимальные очки Системы увеличены.");
             } else {
-                tg.showAlert("❌ Недостаточно золота! Выполняйте ежедневные квесты.");
+                tg.showAlert("❌ Недостаточно золота! Выполняйте квесты.");
             }
         }
 
